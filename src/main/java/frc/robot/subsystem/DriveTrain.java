@@ -15,7 +15,7 @@ public class DriveTrain {
   static MotorControllerGroup left = new MotorControllerGroup(frontLeft, rearLeft);
 
   static Spark frontRight = new Spark(2);
-  static Spark rearRight = new Spark(3);
+  static Spark rearRight = new Spark(7);
   static MotorControllerGroup right = new MotorControllerGroup(frontRight, rearRight);
 
   static DifferentialDrive diffDrive = new DifferentialDrive(left, right);
