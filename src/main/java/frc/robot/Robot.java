@@ -6,9 +6,10 @@ package frc.robot;
 
 
 import edu.wpi.first.wpilibj.TimedRobot;
-// import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.subsystem.DriveTrain;
 
 
 /**
@@ -19,13 +20,13 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
  */
 public class Robot extends TimedRobot {
 
-  // private final Timer timer = new Timer();
+  private final Timer timer = new Timer();
 
-  // private Command m_autonomousCommand;
-  private Command autonomous;
-  private Command driving;
-  private Command boxThings;
+  private final XboxController controller = new XboxController(0);
 
+    private double rot;
+    private double speed;
+    private int stage = 0;
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -68,14 +69,27 @@ public class Robot extends TimedRobot {
     // if (autonomous != null) {
     //   autonomous.schedule();
     // }
-    autonomous.execute();
+    timer.reset();
+    timer.start();
     
   }
 
   /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() {
-    autonomous.execute();
+    if (timer.get() < 1.0 & stage == 0) {
+      DriveTrain.arcadeDrive(0.0, 0.5); // drive forwards half speed
+    // } else if (timer.get() < 1.0 & stage == 1) {
+    //   DriveTrain.arcadeDrive(0.5, 0.0);
+    // } else if (timer.get() < 1.0 & stage == 2) {
+    //   DriveTrain.arcadeDrive(0.0, 0.5); // drive forwards half speed
+    // } else if (timer.get() < 1.0 & stage == 3) {
+    //   DriveTrain.arcadeDrive(0.5, 0.0);
+    } else {
+      DriveTrain.stop(); // stop robot
+      stage += 1;
+      timer.reset();
+    }
 
   }
 
@@ -93,8 +107,31 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    driving.execute();
-    boxThings.execute();
+    // rot setting
+    if (controller.getRawAxis(1) >= 0.1 | controller.getRawAxis(1) <= -0.1) {
+      rot = controller.getRawAxis(1);
+    } else {
+      rot = 0;
+    }
+    // speed setting
+    if (controller.getRawAxis(4) >= 0.1 | controller.getRawAxis(4) <= -0.1) {
+      speed = controller.getRawAxis(4);
+    } else {
+      speed = 0;
+    }
+    // speed maxing
+    if (speed >= 0.7) {
+      speed = 0.7;
+    } else if (speed <= -0.7) {
+      speed = -0.7;
+    }
+    // rot maxing
+    if (rot >= 0.7) {
+      rot = 0.7;
+    } else if (rot <= -0.7) {
+      rot = -0.7;
+    }
+    DriveTrain.arcadeDrive(speed, -rot);
   }
 
   @Override

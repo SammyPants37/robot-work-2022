@@ -10,12 +10,12 @@ import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 
 public class DriveTrain {
-  static Spark frontLeft = new Spark(0);
-  static Spark rearLeft = new Spark(1);
+  static Spark frontLeft = new Spark(3);
+  static Spark rearLeft = new Spark(2);
   static MotorControllerGroup left = new MotorControllerGroup(frontLeft, rearLeft);
 
-  static Spark frontRight = new Spark(2);
-  static Spark rearRight = new Spark(7);
+  static Spark frontRight = new Spark(1);
+  static Spark rearRight = new Spark(0);
   static MotorControllerGroup right = new MotorControllerGroup(frontRight, rearRight);
 
   static DifferentialDrive diffDrive = new DifferentialDrive(left, right);
