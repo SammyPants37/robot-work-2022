@@ -7,9 +7,10 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystem.DriveTrain;
+import frc.robot.subsystem.autonSubsystem;
 
 
 /**
@@ -20,13 +21,14 @@ import frc.robot.subsystem.DriveTrain;
  */
 public class Robot extends TimedRobot {
 
-  private final Timer timer = new Timer();
-
   private final XboxController controller = new XboxController(0);
 
-    private double rot;
-    private double speed;
-    private int stage = 0;
+  private autonSubsystem autonSub = new autonSubsystem();
+
+  private Command autonomous;
+
+  private double rot;
+  private double speed;
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -69,28 +71,13 @@ public class Robot extends TimedRobot {
     // if (autonomous != null) {
     //   autonomous.schedule();
     // }
-    timer.reset();
-    timer.start();
-    
+    autonSub.start();
   }
 
   /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() {
-    if (timer.get() < 1.0 & stage == 0) {
-      DriveTrain.arcadeDrive(0.0, 0.5); // drive forwards half speed
-    // } else if (timer.get() < 1.0 & stage == 1) {
-    //   DriveTrain.arcadeDrive(0.5, 0.0);
-    // } else if (timer.get() < 1.0 & stage == 2) {
-    //   DriveTrain.arcadeDrive(0.0, 0.5); // drive forwards half speed
-    // } else if (timer.get() < 1.0 & stage == 3) {
-    //   DriveTrain.arcadeDrive(0.5, 0.0);
-    } else {
-      DriveTrain.stop(); // stop robot
-      stage += 1;
-      timer.reset();
-    }
-
+    autonomous.execute();
   }
 
   @Override
